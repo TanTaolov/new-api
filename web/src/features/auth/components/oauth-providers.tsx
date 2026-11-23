@@ -146,15 +146,12 @@ export function OAuthProviders({
 
   return (
     <div className={cn('space-y-3', className)}>
-      <div className='relative'>
-        <div className='absolute inset-0 flex items-center'>
-          <span className='w-full border-t' />
-        </div>
-        <div className='relative flex justify-center text-xs uppercase'>
-          <span className='bg-background text-muted-foreground px-2'>
-            {t('Or continue with')}
-          </span>
-        </div>
+      <div className='flex items-center gap-3'>
+        <span className='to-border h-px flex-1 bg-gradient-to-r from-transparent' />
+        <span className='text-muted-foreground text-xs tracking-wider uppercase'>
+          {t('Or continue with')}
+        </span>
+        <span className='to-border h-px flex-1 bg-gradient-to-l from-transparent' />
       </div>
 
       <div className='flex flex-col gap-2'>
