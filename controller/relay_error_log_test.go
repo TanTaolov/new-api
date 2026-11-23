@@ -97,3 +97,38 @@ func TestProcessChannelErrorUsesSnapshotWithoutLeakingChannelMetadata(t *testing
 		assert.NotContains(t, userOther, key)
 	}
 }
+
+func TestRequestLogsRecordIPRegardlessOfUserSetting(t *testing.T) {
+	db := setupManageUserTestDB(t)
+	consume, export := common.LogConsumeEnabled, common.DataExportEnabled
+	common.LogConsumeEnabled, common.DataExportEnabled = true, false
+	t.Cleanup(func() { common.LogConsumeEnabled, common.DataExportEnabled = consume, export })
+
+	for _, tc := range []struct{ name, setting, remote, wantIP string }{
+		{"default", "", "[2001:db8::1]:8080", "2001:db8::1"},
+		{"legacy-off", `{"record_ip_log":false}`, "127.0.0.1:8080", "198.51.100.8"},
+		{"no-request", "", "", ""},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			user := model.User{Username: tc.name, AffCode: tc.name, Setting: tc.setting}
+			require.NoError(t, db.Create(&user).Error)
+			c, engine := gin.CreateTestContext(httptest.NewRecorder())
+			require.NoError(t, engine.SetTrustedProxies([]string{"127.0.0.1"}))
+			if tc.remote != "" {
+				c.Request = httptest.NewRequest(http.MethodPost, "/v1/responses", nil)
+				c.Request.RemoteAddr = tc.remote
+				c.Request.Header.Set("X-Forwarded-For", "198.51.100.8")
+			}
+			c.Set("username", user.Username)
+			model.RecordConsumeLog(c, user.Id, model.RecordConsumeLogParams{Other: model.NewLogOther()})
+			model.RecordErrorLog(c, user.Id, 0, "", "", "test error", 0, 0, false, "", model.NewLogOther())
+
+			var logs []model.Log
+			require.NoError(t, model.LOG_DB.Where("user_id = ?", user.Id).Find(&logs).Error)
+			require.Len(t, logs, 2)
+			for _, log := range logs {
+				assert.Equal(t, tc.wantIP, log.Ip, "log type %d", log.Type)
+			}
+		})
+	}
+}

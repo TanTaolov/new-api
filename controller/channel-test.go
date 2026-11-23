@@ -193,6 +193,8 @@ func testChannel(ctx context.Context, channel *model.Channel, testUserID int, te
 		requestPath = strings.Replace(requestPath, ":generateContent", ":streamGenerateContent", 1)
 	}
 	c.Request = httptest.NewRequestWithContext(ctx, http.MethodPost, requestPath, nil)
+	// 渠道自测不是用户请求，避免将 httptest 的示例地址写入日志。
+	c.Request.RemoteAddr = ""
 
 	cache, err := model.GetUserCache(testUserID)
 	if err != nil {

@@ -675,12 +675,12 @@ func TestUpdateUserSettingKeepsWhatTheRequestLeavesOut(t *testing.T) {
 		{
 			name:        "older client without the new switches",
 			role:        common.RoleAdminUser,
-			body:        `{"notify_type":"webhook","quota_warning_threshold":2000,"webhook_url":"https://example.com/hook","webhook_secret":"hook-secret","accept_unset_model_ratio_model":true,"record_ip_log":true}`,
+			body:        `{"notify_type":"webhook","quota_warning_threshold":2000,"webhook_url":"https://example.com/hook","webhook_secret":"hook-secret","accept_unset_model_ratio_model":true,"record_ip_log":false}`,
 			wantSuccess: true,
 			want: kept(dto.UserSetting{
 				NotifyType: dto.NotifyTypeWebhook, WebhookUrl: "https://example.com/hook", WebhookSecret: "hook-secret",
 				QuotaWarningThreshold: 2000, QuotaWarningEnabled: &off, ChannelNotifyEnabled: &on, UpstreamModelUpdateNotifyEnabled: true,
-				AcceptUnsetRatioModel: true, RecordIpLog: true,
+				AcceptUnsetRatioModel: true,
 			}),
 		},
 		{
@@ -721,6 +721,7 @@ func TestUpdateUserSettingKeepsWhatTheRequestLeavesOut(t *testing.T) {
 			assert.Contains(t, recorder.Body.String(), fmt.Sprintf(`"success":%t`, tc.wantSuccess))
 			require.NoError(t, db.First(&user, user.Id).Error)
 			assert.Equal(t, tc.want, user.GetSetting())
+			assert.NotContains(t, user.Setting, `"record_ip_log"`)
 		})
 	}
 }

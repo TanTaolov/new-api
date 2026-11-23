@@ -58,6 +58,7 @@ const profile: UserProfile = {
   setting: JSON.stringify({
     notify_type: 'email',
     quota_warning_threshold: 500000,
+    record_ip_log: false,
   }),
 }
 
@@ -184,7 +185,7 @@ describe('security page migration', () => {
     ).toBeVisible()
     expect(
       within(verification).getByRole('switch', { name: 'Record IP Address' })
-    ).toBeVisible()
+    ).toBeChecked()
     expect(verification).toHaveClass('xl:sticky', 'xl:top-0')
     expect(verification.parentElement).toHaveClass(
       'grid',
