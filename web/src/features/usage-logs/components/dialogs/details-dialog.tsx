@@ -58,14 +58,13 @@ import { StatusBadge, type StatusBadgeProps } from '@/components/status-badge'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { DynamicPricingBreakdown } from '@/features/pricing/components/dynamic-pricing-breakdown'
-import { usePricingData } from '@/features/pricing/hooks/use-pricing-data'
+import { useLogUsageSchema } from '@/features/pricing/hooks/use-pricing-data'
 import { BILLING_PRICING_VARS } from '@/features/pricing/lib/billing-expr'
 import { compileBillingExpression } from '@/features/pricing/lib/billing-expression/parser'
 import {
   getCachePriceLabels,
   getCachePricingMode,
 } from '@/features/pricing/lib/cache-pricing'
-import { pluginUsageSchema } from '@/features/pricing/lib/plugin-pricing'
 import { PolicyDecisionRecord } from '@/features/system-settings/request-policies/decision-record'
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'
 import { formatBillingCurrencyFromUSD } from '@/lib/currency'
@@ -531,6 +530,7 @@ interface DetailsDialogProps {
   isRoot: boolean
   open: boolean
   onOpenChange: (open: boolean) => void
+  onOpenChangeComplete?: (open: boolean) => void
 }
 
 export function DetailsDialog(props: DetailsDialogProps) {
@@ -550,11 +550,9 @@ export function DetailsDialog(props: DetailsDialogProps) {
     !isViolation &&
     other?.billing_mode === 'tiered_expr' &&
     !!other?.expr_b64
-  const pricingData = usePricingData(props.open && isTieredBilling)
-  const billingUsageSchema = pluginUsageSchema(
-    pricingData.models.find(
-      (model) => model.model_name === props.log.model_name
-    ),
+  const billingUsageSchema = useLogUsageSchema(
+    props.open && isTieredBilling,
+    props.log.model_name,
     other?.admin_info?.task_plugin?.key
   )
   const hasAudioTokens = other?.ws || other?.audio
@@ -687,6 +685,7 @@ export function DetailsDialog(props: DetailsDialogProps) {
     <Dialog
       open={props.open}
       onOpenChange={props.onOpenChange}
+      onOpenChangeComplete={props.onOpenChangeComplete}
       title={
         <>
           {t('Log Details')}

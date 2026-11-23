@@ -22,7 +22,14 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { act, fireEvent, render, screen, within } from '@testing-library/react'
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react'
 import { createInstance } from 'i18next'
 import { I18nextProvider } from 'react-i18next'
 import { afterAll, afterEach, beforeEach, expect, test, vi } from 'vitest'
@@ -146,6 +153,35 @@ test('keeps log details open when the parent refreshes with unchanged data', asy
   expect(await screen.findByRole('dialog')).toBeVisible()
   rerender(<DetailPreview other={other} isAdmin />)
   expect(screen.getByRole('dialog')).toBeVisible()
+})
+
+test('only an open tiered log detail subscribes to pricing when the previews do not need it', async () => {
+  render(
+    <I18nextProvider i18n={i18n}>
+      <QueryClientProvider client={client}>
+        <DetailPreview other={{ model_price: 0.25 }} isAdmin />
+        <DetailPreview
+          other={{
+            billing_mode: 'tiered_expr',
+            matched_tier: 'standard',
+            expr_b64: btoa('tier("standard", p * 2 + c * 10)'),
+          }}
+          isAdmin
+        />
+      </QueryClientProvider>
+    </I18nextProvider>
+  )
+  const pricing = client.getQueryCache().find({ queryKey: ['pricing'] })!
+  const preview = screen.getByRole('button', { name: /standard/i })
+  expect(pricing.getObserversCount()).toBe(0)
+  fireEvent.click(preview)
+  const dialog = await screen.findByRole('dialog')
+  expect(pricing.getObserversCount()).toBe(1)
+  fireEvent.click(within(dialog).getByRole('button', { name: 'Close' }))
+  await waitFor(() => expect(dialog).not.toBeInTheDocument())
+  expect(pricing.getObserversCount()).toBe(0)
+  fireEvent.click(preview)
+  expect(await screen.findByRole('dialog')).toBeVisible()
 })
 
 test.each([

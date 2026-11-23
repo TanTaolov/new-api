@@ -35,7 +35,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { usePricingData } from '@/features/pricing/hooks/use-pricing-data'
+import { useLogUsageSchema } from '@/features/pricing/hooks/use-pricing-data'
 import {
   normalizeTierLabel,
   parseTaskTiersFromExpr,
@@ -44,7 +44,6 @@ import {
   formatTaskUsageUnitPrice,
   getTaskUsagePriceUnitLabelKey,
 } from '@/features/pricing/lib/dynamic-price'
-import { pluginUsageSchema } from '@/features/pricing/lib/plugin-pricing'
 import { taskUsageUnitLabel } from '@/features/pricing/lib/task-price-display'
 import type { BillingUsageSchema } from '@/features/pricing/types'
 import { getUserAvatarFallback, getUserAvatarStyle } from '@/lib/avatar'
@@ -821,19 +820,15 @@ export function useCommonLogsColumns(
         header: t('Details'),
         cell: function DetailsCell({ row }) {
           const { t, i18n } = useTranslation()
-          const [dialogOpen, setDialogOpen] = useState(false)
+          const [dialogOpen, setDialogOpen] = useState<boolean | null>(null)
           const log = row.original
           const other = parseLogOther(log.other)
 
-          const pricingData = usePricingData(
+          const usageSchema = useLogUsageSchema(
             log.type === 2 &&
               other?.is_task === true &&
-              other.billing_mode === 'tiered_expr'
-          )
-          const usageSchema = pluginUsageSchema(
-            pricingData.models.find(
-              (model) => model.model_name === log.model_name
-            ),
+              other.billing_mode === 'tiered_expr',
+            log.model_name,
             other?.admin_info?.task_plugin?.key
           )
           const segments = buildDetailSegments(
@@ -884,18 +879,24 @@ export function useCommonLogsColumns(
               <button
                 type='button'
                 className='group flex max-w-[200px] items-center gap-1 text-left text-xs'
+                aria-haspopup='dialog'
                 onClick={() => setDialogOpen(true)}
                 title={t('Click to view full details')}
               >
                 {detailPreview}
               </button>
-              <DetailsDialog
-                log={log}
-                isAdmin={isAdmin}
-                isRoot={isRoot}
-                open={dialogOpen}
-                onOpenChange={setDialogOpen}
-              />
+              {dialogOpen !== null && (
+                <DetailsDialog
+                  log={log}
+                  isAdmin={isAdmin}
+                  isRoot={isRoot}
+                  open={dialogOpen}
+                  onOpenChange={setDialogOpen}
+                  onOpenChangeComplete={(open) => {
+                    if (!open) setDialogOpen(null)
+                  }}
+                />
+              )}
             </>
           )
         },

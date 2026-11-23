@@ -17,22 +17,43 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { useQuery } from '@tanstack/react-query'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { useStatus } from '@/hooks/use-status'
 import { requireServerSuccess } from '@/lib/server-error-message'
 
 import { getPricing } from '../api'
+import { pluginUsageSchema } from '../lib/plugin-pricing'
+import type { PricingData } from '../types'
 
-export function usePricingData(enabled = true) {
+const pricingQuery = {
+  queryKey: ['pricing'],
+  queryFn: async () => requireServerSuccess(await getPricing()),
+  staleTime: 5 * 60 * 1000,
+}
+
+export function useLogUsageSchema(
+  enabled: boolean,
+  modelName: string,
+  pluginKey: string | undefined
+) {
+  const select = useCallback(
+    (pricing: PricingData) =>
+      enabled
+        ? pluginUsageSchema(
+            pricing.data?.find((model) => model.model_name === modelName),
+            pluginKey
+          )
+        : undefined,
+    [enabled, modelName, pluginKey]
+  )
+  return useQuery({ ...pricingQuery, enabled, subscribed: enabled, select }).data
+}
+
+export function usePricingData() {
   const { status } = useStatus()
 
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['pricing'],
-    queryFn: async () => requireServerSuccess(await getPricing()),
-    staleTime: 5 * 60 * 1000,
-    enabled,
-  })
+  const { data, isLoading, error, refetch } = useQuery(pricingQuery)
 
   // Ensure rates never reach zero to prevent division errors
   const priceRate = useMemo(
