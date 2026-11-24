@@ -56,15 +56,15 @@ export function useSidebarData(badges: SidebarBadges = {}): SidebarData {
     navGroups: [
       {
         id: 'chat',
-        title: t('Chat'),
+        title: t('Chat', { context: 'menuGroup' }),
         items: [
           {
-            title: t('Playground'),
+            title: t('Playground', { context: 'menu' }),
             url: '/playground',
             icon: FlaskConical,
           },
           {
-            title: t('Chat'),
+            title: t('Chat', { context: 'menu' }),
             icon: MessageSquare,
             type: 'chat-presets',
           },
@@ -72,10 +72,10 @@ export function useSidebarData(badges: SidebarBadges = {}): SidebarData {
       },
       {
         id: 'general',
-        title: t('General'),
+        title: t('General', { context: 'menuGroup' }),
         items: [
           {
-            title: t('Overview'),
+            title: t('Overview', { context: 'menu' }),
             url: '/dashboard/overview',
             icon: Activity,
           },
@@ -85,7 +85,7 @@ export function useSidebarData(badges: SidebarBadges = {}): SidebarData {
             icon: LayoutDashboard,
           },
           {
-            title: t('API Keys'),
+            title: t('API Keys', { context: 'menu' }),
             url: '/keys',
             icon: Key,
           },
@@ -110,10 +110,10 @@ export function useSidebarData(badges: SidebarBadges = {}): SidebarData {
       },
       {
         id: 'personal',
-        title: t('Personal'),
+        title: t('Personal', { context: 'menuGroup' }),
         items: [
           {
-            title: t('Wallet'),
+            title: t('Wallet', { context: 'menu' }),
             url: '/wallet',
             icon: Wallet,
           },
@@ -123,7 +123,7 @@ export function useSidebarData(badges: SidebarBadges = {}): SidebarData {
             icon: User,
           },
           {
-            title: t('Security & Access'),
+            title: t('Security & Access', { context: 'menu' }),
             url: '/security',
             icon: ShieldCheck,
           },
@@ -131,30 +131,30 @@ export function useSidebarData(badges: SidebarBadges = {}): SidebarData {
       },
       {
         id: 'admin',
-        title: t('Admin'),
+        title: t('Admin', { context: 'menuGroup' }),
         items: [
           {
-            title: t('Channels'),
+            title: t('Channels', { context: 'menu' }),
             url: '/channels',
             icon: Radio,
           },
           {
-            title: t('Models'),
+            title: t('Models', { context: 'menu' }),
             url: '/models/metadata',
             icon: Box,
           },
           {
-            title: t('Users'),
+            title: t('Users', { context: 'menu' }),
             url: '/users',
             icon: Users,
           },
           {
-            title: t('Redemption Codes'),
+            title: t('Redemption Codes', { context: 'menu' }),
             url: '/redemption-codes',
             icon: Ticket,
           },
           {
-            title: t('Subscriptions'),
+            title: t('Subscriptions', { context: 'menu' }),
             url: '/subscriptions',
             icon: CreditCard,
           },
@@ -165,7 +165,7 @@ export function useSidebarData(badges: SidebarBadges = {}): SidebarData {
             requiredRole: ROLE.SUPER_ADMIN,
           },
           {
-            title: t('Plugins'),
+            title: t('Plugins', { context: 'menu' }),
             url: '/task-plugins',
             icon: PlugZap,
             requiredRole: ROLE.SUPER_ADMIN,

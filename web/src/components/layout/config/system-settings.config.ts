@@ -56,7 +56,7 @@ function getSystemSettingsNavGroups(
       title: t('System Administration'),
       items: [
         {
-          title: t('Site & Branding'),
+          title: t('Site & Branding', { context: 'settingsMenu' }),
           icon: Settings,
           items: getSiteSectionNavItems(t),
         },
@@ -66,7 +66,7 @@ function getSystemSettingsNavGroups(
           items: getAuthSectionNavItems(t),
         },
         {
-          title: t('Billing & Payment'),
+          title: t('Billing & Payment', { context: 'settingsMenu' }),
           icon: CreditCard,
           badge: badges.modelPricing,
           items: getBillingSectionNavItems(t, {
@@ -74,7 +74,7 @@ function getSystemSettingsNavGroups(
           }),
         },
         {
-          title: t('Models'),
+          title: t('Models', { context: 'settingsMenu' }),
           icon: Box,
           items: getModelsSectionNavItems(t),
         },
@@ -84,17 +84,17 @@ function getSystemSettingsNavGroups(
           items: getPolicySectionNavItems(t),
         },
         {
-          title: t('Security & Limits'),
+          title: t('Security & Limits', { context: 'settingsMenu' }),
           icon: ShieldAlert,
           items: getSecuritySectionNavItems(t),
         },
         {
-          title: t('Console Content'),
+          title: t('Console Content', { context: 'settingsMenu' }),
           icon: Layout,
           items: getContentSectionNavItems(t),
         },
         {
-          title: t('Operations'),
+          title: t('Operations', { context: 'settingsMenu' }),
           icon: Wrench,
           items: getOperationsSectionNavItems(t),
         },

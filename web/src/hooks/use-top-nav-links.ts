@@ -64,12 +64,12 @@ export function useTopNavLinks(): TopNavLink[] {
 
   // Home
   if (modules?.home !== false) {
-    links.push({ title: t('Home'), href: '/' })
+    links.push({ title: t('Home', { context: 'menu' }), href: '/' })
   }
 
   // Console -> /dashboard (new console path)
   if (modules?.console !== false) {
-    links.push({ title: t('Console'), href: '/dashboard' })
+    links.push({ title: t('Console', { context: 'menu' }), href: '/dashboard' })
   }
 
   // Pricing
@@ -83,21 +83,26 @@ export function useTopNavLinks(): TopNavLink[] {
   const rankings = modules?.rankings
   if (rankings && typeof rankings === 'object' && rankings.enabled) {
     const requiresAuth = rankings.requireAuth && !isAuthed
-    links.push({ title: t('Rankings'), href: '/rankings', requiresAuth })
+    links.push({
+      title: t('Rankings', { context: 'menu' }),
+      href: '/rankings',
+      requiresAuth,
+    })
   }
 
   // Docs (supports external links)
   if (modules?.docs !== false) {
+    const title = t('Docs', { context: 'menu' })
     if (docsLink) {
-      links.push({ title: t('Docs'), href: docsLink, external: true })
+      links.push({ title, href: docsLink, external: true })
     } else {
-      links.push({ title: t('Docs'), href: '/docs' })
+      links.push({ title, href: '/docs' })
     }
   }
 
   // About
   if (modules?.about !== false) {
-    links.push({ title: t('About'), href: '/about' })
+    links.push({ title: t('About', { context: 'menu' }), href: '/about' })
   }
 
   return links
