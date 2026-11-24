@@ -284,13 +284,41 @@ func requestLogIP(c *gin.Context) string {
 	return c.ClientIP()
 }
 
+// withRequestUserAgent 将入站客户端标识保存到与 IP 同范围可见的请求日志。
+// 无 HTTP 请求或未发送该头时保留原元数据；过长的值按字符截断，避免放大日志。
+func withRequestUserAgent(c *gin.Context, other *LogOther) *LogOther {
+	if c.Request == nil {
+		return other
+	}
+	agent := c.Request.UserAgent()
+	if agent == "" {
+		return other
+	}
+	const maxChars = 512
+	if len(agent) > maxChars {
+		count := 0
+		for offset := range agent {
+			if count == maxChars {
+				agent = agent[:offset]
+				break
+			}
+			count++
+		}
+	}
+	if other == nil {
+		other = NewLogOther()
+	}
+	other.SetPublic("user_agent", agent)
+	return other
+}
+
 func RecordErrorLog(c *gin.Context, userId int, channelId int, modelName string, tokenName string, content string, tokenId int, useTimeSeconds int,
 	isStream bool, group string, other *LogOther) {
 	logger.LogInfo(c, common.LogText("record error log: userId=%d, channelId=%d, modelName=%s, tokenName=%s, content=%s", userId, channelId, modelName, tokenName, common.LocalLogPreview(content)))
 	username := c.GetString("username")
 	requestId := c.GetString(common.RequestIdKey)
 	upstreamRequestId := c.GetString(common.UpstreamRequestIdKey)
-	otherStr := other.JSONString()
+	otherStr := withRequestUserAgent(c, other).JSONString()
 	log := &Log{
 		UserId:            userId,
 		Username:          username,
@@ -345,7 +373,7 @@ func RecordConsumeLog(c *gin.Context, userId int, params RecordConsumeLogParams)
 	requestId := c.GetString(common.RequestIdKey)
 	upstreamRequestId := c.GetString(common.UpstreamRequestIdKey)
 	createdAt := common.GetTimestamp()
-	other := params.Other
+	other := withRequestUserAgent(c, params.Other)
 	content := other.setContent(params.Content)
 	otherStr := other.JSONString()
 	log := &Log{

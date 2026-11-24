@@ -778,6 +778,10 @@ export function DetailsDialog(props: DetailsDialogProps) {
             />
           )}
 
+          {showTiming && other?.user_agent && (
+            <DetailRow label={t('Client')} value={other.user_agent} mono />
+          )}
+
           {showTiming && props.log.use_time > 0 && (
             <DetailRow
               label={t('Response Time')}
