@@ -3,6 +3,7 @@ package model
 import (
 	"errors"
 	"strconv"
+	"strings"
 
 	"github.com/QuantumNous/new-api/common"
 	"github.com/QuantumNous/new-api/logger"
@@ -72,11 +73,12 @@ func SearchRedemptions(keyword string, status string, startIdx int, num int) (re
 
 	query := tx.Model(&Redemption{})
 
+	keyword = strings.TrimSpace(keyword)
 	if keyword != "" {
 		if id, err := strconv.Atoi(keyword); err == nil {
-			query = query.Where("id = ? OR name LIKE ?", id, keyword+"%")
+			query = query.Where("id = ? OR name LIKE ? OR "+commonKeyCol+" = ?", id, keyword+"%", keyword)
 		} else {
-			query = query.Where("name LIKE ?", keyword+"%")
+			query = query.Where("name LIKE ? OR "+commonKeyCol+" = ?", keyword+"%", keyword)
 		}
 	}
 
