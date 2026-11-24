@@ -111,14 +111,14 @@ export function ProfileDropdown() {
           {isSecurityVisible && (
             <DropdownMenuItem onClick={() => navigate({ to: '/security' })}>
               <ShieldCheck className='size-4' />
-              {t('Security & Access')}
+              {t('Security & Access', { context: 'menu' })}
             </DropdownMenuItem>
           )}
 
           {isWalletVisible && (
             <DropdownMenuItem onClick={() => navigate({ to: '/wallet' })}>
               <Wallet className='size-4' />
-              {t('Wallet')}
+              {t('Wallet', { context: 'menu' })}
             </DropdownMenuItem>
           )}
 
@@ -140,7 +140,7 @@ export function ProfileDropdown() {
 
           <DropdownMenuItem variant='destructive' onClick={() => setOpen(true)}>
             <LogOut className='size-4' />
-            {t('Sign out')}
+            {t('Sign out', { context: 'menu' })}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
