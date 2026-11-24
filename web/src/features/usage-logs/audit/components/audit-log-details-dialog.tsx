@@ -156,10 +156,10 @@ export function AuditLogDetailsDialog(props: { entry: AuditLog }) {
           )}
           {props.entry.user_agent && (
             <DetailRow
-              label={t('Client')}
+              label='User-Agent'
               value={
                 <AuditDetailValue
-                  label={t('User Agent')}
+                  label='User-Agent'
                   value={props.entry.user_agent}
                   mono
                   copyable

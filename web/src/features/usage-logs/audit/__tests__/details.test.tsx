@@ -370,7 +370,7 @@ it('aligns every request field in the same label and value columns', async () =>
     'Method',
     'HTTP',
     'IP',
-    'Client',
+    'User-Agent',
     'Route',
     'Request ID',
     'Token identifier',

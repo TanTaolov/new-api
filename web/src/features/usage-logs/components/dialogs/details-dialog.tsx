@@ -655,7 +655,7 @@ export function DetailsDialog(props: DetailsDialogProps) {
           value: props.log.ip,
         },
         other?.user_agent && {
-          label: t('User Agent'),
+          label: 'User-Agent',
           value: String(other.user_agent),
         },
       ].filter(Boolean) as Array<{ label: string; value: string }>)
@@ -779,7 +779,7 @@ export function DetailsDialog(props: DetailsDialogProps) {
           )}
 
           {showTiming && other?.user_agent && (
-            <DetailRow label={t('Client')} value={other.user_agent} mono />
+            <DetailRow label='User-Agent' value={other.user_agent} mono />
           )}
 
           {showTiming && props.log.use_time > 0 && (
