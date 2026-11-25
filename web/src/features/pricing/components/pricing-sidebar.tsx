@@ -185,14 +185,19 @@ export const PricingSidebar = memo(function PricingSidebar(
       label: t('All Vendors'),
       count: props.models.length,
     },
-    ...props.vendors
-      .map((vendor) => ({
-        value: vendor.name,
-        label: vendor.name,
-        count: counts.vendors.get(vendor.name) ?? 0,
-        icon: vendor.icon ? getLobeIcon(vendor.icon, 14) : undefined,
-      }))
-      .filter((vendor) => vendor.count > 0),
+    ...Array.from(
+      new Map(
+        props.vendors.map((vendor) => [
+          vendor.name,
+          {
+            value: vendor.name,
+            label: vendor.name,
+            count: counts.vendors.get(vendor.name) ?? 0,
+            icon: vendor.icon ? getLobeIcon(vendor.icon, 14) : undefined,
+          },
+        ])
+      ).values()
+    ).filter((vendor) => vendor.count > 0),
   ]
 
   const groupOptions: FilterOption[] = [
