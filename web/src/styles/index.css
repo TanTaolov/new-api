@@ -557,28 +557,6 @@ For commercial licensing, please contact support@quantumnous.com
   }
 }
 
-@keyframes auth-mascot-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-.auth-mascot-float {
-  animation: auth-mascot-float 4.5s ease-in-out infinite;
-}
-.auth-mascot-float-delay {
-  animation-delay: -2.25s;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .auth-mascot-float {
-    animation: none;
-  }
-}
 
 .auth-surface h2 {
   @apply from-foreground to-foreground/70 bg-gradient-to-br bg-clip-text text-center text-[1.75rem] font-bold tracking-tight text-transparent sm:text-left;

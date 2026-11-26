@@ -81,13 +81,13 @@ export function AuthLayout({ children }: AuthLayoutProps) {
               src='/claude.webp'
               alt=''
               draggable={false}
-              className='auth-mascot-float h-24 w-auto select-none'
+              className='h-24 w-auto select-none'
             />
             <img
               src='/gpt.webp'
               alt=''
               draggable={false}
-              className='auth-mascot-float auth-mascot-float-delay h-24 w-auto select-none'
+              className='h-24 w-auto select-none'
             />
           </div>
 
@@ -99,7 +99,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
               src='/claude.webp'
               alt=''
               draggable={false}
-              className='auth-mascot-float w-full drop-shadow-[0_12px_24px_rgba(234,88,12,0.25)] select-none'
+              className='w-full drop-shadow-[0_12px_24px_rgba(234,88,12,0.25)] select-none'
             />
           </div>
 
@@ -111,7 +111,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
               src='/gpt.webp'
               alt=''
               draggable={false}
-              className='auth-mascot-float auth-mascot-float-delay w-full drop-shadow-[0_12px_24px_rgba(139,92,246,0.25)] select-none'
+              className='w-full drop-shadow-[0_12px_24px_rgba(139,92,246,0.25)] select-none'
             />
           </div>
 
